@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>ChatGPT - Chat with God for Thoughts and Prayers</title>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Raleway&display=swap" rel="stylesheet">
+    <style>
+        body {
+            background-image: url('/static/background.jfif');
+            background-size: cover;
+            font-family: 'Raleway', sans-serif;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        .header {
+            background: rgba(255, 255, 255, 0.5);
+            padding: 20px;
+            border-radius: 10px;
+            margin-top: 20px;
+            text-align: center;
+        }
+        h1, h2 {
+            font-family: 'Playfair Display', serif;
+        }
+        #chat-interface {
+            background-color: #fff;
+            width: 500px;
+            height: 500px;
+            margin-top: 50px;
+            padding: 20px;
+            border-radius: 15px;
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.19), 0 6px 6px rgba(0, 0, 0, 0.23);
+            overflow: auto;
+        }
+        .message-img {
+            max-width: 50px;
+            height: auto;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>Chat GTP - Chat with God for Thoughts and Prayers</h1>
+        <h2>Welcome, my child, to our sacred space of wisdom and light. Here, you are not alone, for my divine presence is with you. Let this be your sanctuary, a place where doubts are calmed, questions are answered, and hearts are healed. Speak your truth, voice your fears, and let your thoughts unfurl. As it is said, 'Ask, and it shall be given you; seek, and ye shall find.' So, my dear one, what brings you here today?</h2>
+    </div>
+    <div id="chat-interface">
+        <div id="chat-log"></div>
+        <input type="text" id="user-input" placeholder="I'm listening, my child..." onclick="this.placeholder = ''" onblur="this.placeholder = 'I\'m listening, my child...'">
+        <button id="send-button" onclick="sendMessage()">Send</button>
+    </div>
+
+    <script>
+        const chatLog = document.getElementById('chat-log');
+        const userInput = document.getElementById('user-input');
+        const sendButton = document.getElementById('send-button');
+
+        userInput.addEventListener('keypress', function (event) {
+            if (event.key === 'Enter') {
+                event.preventDefault();  // Prevent form submission & page refresh
+                sendMessage();
+            }
+        });
+
+        function sendMessage() {
+    const message = userInput.value;
+    displayMessage('user', message);
+    userInput.value = '';
+    userInput.disabled = true; // Disable the input field
+    sendButton.disabled = true; // Disable the send button
+
+    // Send user's message to the server
+    fetch('/chat', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ message: message }),
+    })
+    .then(response => response.json())
+    .then(data => {
+        const assistantMessage = data.message;
+        displayMessage('assistant', assistantMessage);
+        userInput.disabled = false; // Re-enable the input field
+        sendButton.disabled = false; // Re-enable the send button
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        userInput.disabled = false; // Re-enable the input field
+        sendButton.disabled = false; // Re-enable the send button
+    });
+}
+
+        function displayMessage(role, message) {
+            const messageDiv = document.createElement('div');
+            messageDiv.classList.add(role + '-message');
+            messageDiv.classList.add('message');
+
+            const img = document.createElement('img');
+            img.src = `/static/${role === 'user' ? 'genericprofilepic' : 'godprofilepic'}.png`;
+            img.alt = `${role === 'user' ? 'User' : 'God'} Profile Picture`;
+            img.classList.add('message-img');
+
+            const messageText = document.createElement('p');
+            messageText.textContent = message;
+
+            messageDiv.appendChild(img);
+            messageDiv.appendChild(messageText);
+
+            chatLog.appendChild(messageDiv);
+            chatLog.scrollTop = chatLog.scrollHeight; // Scroll to the bottom
+        }
+    </script>
+</body>
+</html>
