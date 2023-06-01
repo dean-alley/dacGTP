@@ -6,7 +6,7 @@ from flask_session import Session
 # Set the API key from environment variable
 openai.api_key = os.getenv('OPENAI_API_KEY')
 
-# Flask app setupp
+# Flask app setup
 app = Flask(__name__)
 
 # Set a secret key for Flask session management
