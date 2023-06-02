@@ -38,7 +38,7 @@ def CustomChatGPT(user_input):
 @app.route('/', methods=['GET'])
 def home():
     try:
-        # Start a new chat session with an initial system message
+        # Start a new chat session with an initial system message234
         session['messages'] = [
             {
                 "role": "system",
