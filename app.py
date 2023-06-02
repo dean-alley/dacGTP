@@ -12,7 +12,7 @@ app = Flask(__name__)
 # Set a secret key for Flask session management
 app.secret_key = os.urandom(24)
 
-# Set up session configuration
+# Set up session configurationn
 app.config['SESSION_TYPE'] = 'filesystem'
 app.config['SESSION_PERMANENT'] = False
 Session(app)
