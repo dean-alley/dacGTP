@@ -39,6 +39,23 @@
         }
     </style>
 <meta name="facebook-domain-verification" content="b233svj1z03fxyd2jcpzlmpuj9w7au" /> 
+<!-- Meta Pixel Code -->
+<script>
+    !function(f,b,e,v,n,t,s)
+    {if(f.fbq)return;n=f.fbq=function(){n.callMethod?
+    n.callMethod.apply(n,arguments):n.queue.push(arguments)};
+    if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';
+    n.queue=[];t=b.createElement(e);t.async=!0;
+    t.src=v;s=b.getElementsByTagName(e)[0];
+    s.parentNode.insertBefore(t,s)}(window, document,'script',
+    'https://connect.facebook.net/en_US/fbevents.js');
+    fbq('init', '1297760894494523');
+    fbq('track', 'PageView');
+    </script>
+    <noscript><img height="1" width="1" style="display:none"
+    src="https://www.facebook.com/tr?id=1297760894494523&ev=PageView&noscript=1"
+    /></noscript>
+    <!-- End Meta Pixel Code -->
 </head>
 <body>
     <div class="header">
@@ -63,34 +80,46 @@
             }
         });
 
-        function sendMessage() {
-    const message = userInput.value;
-    displayMessage('user', message);
-    userInput.value = '';
-    userInput.disabled = true; // Disable the input field
-    sendButton.disabled = true; // Disable the send button
+        function trackCustomEvent(event_name) {
+            fbq('trackCustom', event_name);
+        }
 
-    // Send user's message to the server
-    fetch('/chat', {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ message: message }),
-    })
-    .then(response => response.json())
-    .then(data => {
-        const assistantMessage = data.message;
-        displayMessage('assistant', assistantMessage);
-        userInput.disabled = false; // Re-enable the input field
-        sendButton.disabled = false; // Re-enable the send button
-    })
-    .catch(error => {
-        console.error('Error:', error);
-        userInput.disabled = false; // Re-enable the input field
-        sendButton.disabled = false; // Re-enable the send button
-    });
-}
+        function sendMessage() {
+            const message = userInput.value;
+            
+            // Add this line for the UserMessageSent event
+            trackCustomEvent('UserMessageSent');
+
+            displayMessage('user', message);
+            userInput.value = '';
+            userInput.disabled = true; // Disable the input field
+            sendButton.disabled = true; // Disable the send button
+
+            // Send user's message to the server
+            fetch('/chat', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ message: message }),
+            })
+            .then(response => response.json())
+            .then(data => {
+                const assistantMessage = data.message;
+                
+                // Add this line for the AssistantMessageReceived event
+                trackCustomEvent('AssistantMessageReceived');
+
+                displayMessage('assistant', assistantMessage);
+                userInput.disabled = false; // Re-enable the input field
+                sendButton.disabled = false; // Re-enable the send button
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                userInput.disabled = false; // Re-enable the input field
+                sendButton.disabled = false; // Re-enable the send button
+            });
+        }
 
         function displayMessage(role, message) {
             const messageDiv = document.createElement('div');
